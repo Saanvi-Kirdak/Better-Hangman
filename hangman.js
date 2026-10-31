@@ -1,4 +1,4 @@
-let circleY = 0
+let circleY = 0;
 let restY = 100
 const stiff = 100
 const displacement = circleY-restY
@@ -6,6 +6,9 @@ let velocity =0
 let bodyMass = 15
 let armMass = 5
 let legMass = 10
+let angle = 0;
+let amplitude = 0;
+
 
 function drawHead(){
   if (limbCount > 0){
@@ -48,17 +51,18 @@ function drawLeg2(){
     line(p1.x,p1.y,p2.x,p2.y)
 
     circleY += legMass
+    amplitude +=8
   }
 }
 
 function drawArm1(){
   if (limbCount > 4){
-    line(160,circleY,200,circleY+20)
+    line(200,circleY+20,160,handY)
   }
 }
 function drawArm2(){
   if (limbCount > 5){
-    line(200,circleY+20,240,circleY+10)
+    line(200,circleY+20,240,handY)
    
   }
 }

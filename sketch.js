@@ -37,6 +37,12 @@ function draw() {
   velocity += acceleration * dt
   circleY += velocity * dt
   velocity *= 0.95
+
+  const handRestY = circleY +60
+  handY = handRestY + sin(angle)*amplitude;
+  angle += 0.2;
+ amplitude *= 0.5
+
   background (15, 75, 120)
   //draw animated bubbles
   drawBubbles()
