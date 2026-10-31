@@ -31,6 +31,12 @@ async function setup() {
 }
 
 function draw() {
+  //physics!! yay!!
+   const acceleration = (restY-circleY)*stiff
+  const dt = deltaTime/1000
+  velocity += acceleration * dt
+  circleY += velocity * dt
+  velocity *= 0.95
   background (15, 75, 120)
   //draw animated bubbles
   drawBubbles()
@@ -40,14 +46,24 @@ function draw() {
   // added stroke(0)
   stroke(0)
   strokeWeight(10)
-  line(100, 50, 100, 275)
+  line(100, 50, 100, 330)
   line(100, 50, 200, 50)
-  line(50, 275, 150, 275)
-  line(200, 50, 200, 73)
+  line(50, 330, 150, 330)
+  strokeWeight(4)
+  line(200, 50, 200, circleY-25)
   drawLines()
   drawLetters()
-  drawHangMan()
   drawWrongLetters()
+  drawHead()
+  drawTorso()
+  drawArm1()
+  drawArm2()
+  drawLeg1()
+  drawLeg2()
+  drawEye1()
+  drawEye2()
+  drawMouth()
+
 }
 
 function drawWrongLetters() {
@@ -77,46 +93,6 @@ function drawLines() {
   }
 }
 
-function drawHangMan() {
-  if (limbCount > 0) {
-    // head
-    noFill();
-    strokeWeight(5)
-    circle(200, 100, 50)
-  }
-  if (limbCount > 1) {
-    // torso
-    line(200, 125, 200, 190)
-  }
-  if (limbCount > 2) {
-    // leg 1
-    line(200, 190, 180, 235)
-  }
-  if (limbCount > 3) {
-    // leg 2
-    line(200, 190, 220, 235)
-  }
-  if (limbCount > 4) {
-    // arm 1
-    line(180, 165, 200, 155)
-  }
-  if (limbCount > 5) {
-    // arm 2
-    line(220, 165, 200, 155)
-  }
-  if (limbCount > 6) {
-    // eye 1
-    circle(193, 95, 5)
-  }
-  if (limbCount > 7) {
-    // eye 2
-    circle(207, 95, 5)
-  }  
-  if (limbCount > 8) {
-    // mouth
-    arc(200, 108, 15, 15, 0, PI);
-  }
-}
 
 function startGame() {
   chooseWord()
