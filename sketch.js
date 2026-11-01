@@ -7,9 +7,16 @@ let wrongLetters = []
 //bubbles
 let bubbles = []
 let numberOfBubbles = 30
+const musicWon = "wonSound.mp3"
+const musicLost = "lostSound.mp3"
+let wonSound
+let lostSound
+let musicHasBeenPlayed = false
 
 async function setup() {
   createCanvas(400, 400)
+  wonSound = await loadSound(musicWon);
+  lostSound = await loadSound(musicLost);
 
   //create bubbles across the screen
   for (let i = 0; i < numberOfBubbles; i++){
@@ -22,7 +29,6 @@ async function setup() {
     })
   }
   
-  background("lightblue")
   // the following is here because p5 preload doesn't seem to work
   const response = await fetch("wordList.txt")
   const fileText = await response.text()
@@ -41,41 +47,52 @@ function draw() {
   const handRestY = circleY +60
   handY = handRestY + sin(angle)*amplitude;
   angle += 0.2;
- amplitude *= 0.5
+  amplitude *= 0.5
 
-  background (15, 75, 120)
+  background ("lightblue")
   //draw animated bubbles
   drawBubbles()
   
+  if (!isGameOver()) {
+    //hangman code
+    // added stroke(0)
+    stroke(0)
+    strokeWeight(10)
+    line(100, 50, 100, 330)
+    line(100, 50, 200, 50)
+    line(50, 330, 150, 330)
+    strokeWeight(4)
+    line(200, 50, 200, circleY-25)
+    drawLines()
+    drawLetters()
+    drawWrongLetters()
+    drawHead()
+    drawTorso()
+    drawArm1()
+    drawArm2()
+    drawLeg1()
+    drawLeg2()
+    drawEye1()
+    drawEye2()
+    drawMouth()
+  } else {
+    drawGameOver()
+  }
 
-  //hangman code
-  // added stroke(0)
-  stroke(0)
-  strokeWeight(10)
-  line(100, 50, 100, 330)
-  line(100, 50, 200, 50)
-  line(50, 330, 150, 330)
-  strokeWeight(4)
-  line(200, 50, 200, circleY-25)
-  drawLines()
-  drawLetters()
-  drawWrongLetters()
-  drawHead()
-  drawTorso()
-  drawArm1()
-  drawArm2()
-  drawLeg1()
-  drawLeg2()
-  drawEye1()
-  drawEye2()
-  drawMouth()
 
+}
+
+function playMusicOnce() {
+  if(!musicHasBeenPlayed) {
+    play
+  }
 }
 
 function drawWrongLetters() {
   fill("white")
   rect(325, 20, 60, 240)
   textSize(30)
+  textWeight(10)
   fill("black")
   for (wrongLetterPos = 0; wrongLetterPos < wrongLetters.length; wrongLetterPos++) {
     text(wrongLetters[wrongLetterPos], 340, 52 + 25 * wrongLetterPos)
@@ -118,7 +135,7 @@ function keyPressed() {
       // console.log(limbCount + " limbs are drawn")
     }
   }
-  handleGameOver() // ask user if they want to play again
+  drawGameOver() // ask user if they want to play again
 }
 
 function chooseWord() {
@@ -151,33 +168,40 @@ function areAllLettersRevealed() {
   return true
 }
 
-function handleGameOver() {
-  if (!isGameOver) {
+function drawGameOver() {
+  if (!isGameOver()) {
     return
   }
   
+  fill("yellow")
+  textAlign(CENTER, CENTER);
+  textWeight(900)
+  noStroke()
   if (limbCount === 9) {
-    console.log("You lost :( the program won")
-    console.log("The word was: " + gameWord)
-    textSize(14)
-    text("The word was " + gameWord, 170, 330)
-    fill("yellow")
-    textSize(40)
-    text("You Lost!", 165, 315);
+    textSize(30)
+    text("The word was " + gameWord, 200, 275)
+    textSize(60)
+    text("You Lost!", 200, 200);
+    if(!musicHasBeenPlayed) {
+      lostSound.play()
+      musicHasBeenPlayed = true
+    }
 
   } else if (areAllLettersRevealed()) {
-    console.log("You won! Good job")
-    fill("yellow")
-    textSize(50)
-    text("You Won!", 165, 315);
-
+    textSize(60)
+    text("You Won!", 200, 200);
+    if(!musicHasBeenPlayed) {
+      wonSound.play()
+      musicHasBeenPlayed = true
+    }
   }
+
 }
 
 //draw and animate bubbles
 function drawBubbles() {
   noFill()
-  stroke(220, 250, 255, 180)
+  stroke("blue")
   strokeWeight(2)
 
   for (let bubble of bubbles) {
