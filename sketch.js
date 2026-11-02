@@ -13,6 +13,11 @@ let wonSound
 let lostSound
 let musicHasBeenPlayed = false
 
+//timer
+let gameTime = 60
+let timeLeft = 60
+let startTime
+
 async function setup() {
   createCanvas(400, 400)
   wonSound = await loadSound(musicWon);
@@ -34,6 +39,8 @@ async function setup() {
   const fileText = await response.text()
   wordList = fileText.split(/\r?\n/).filter(Boolean)
   startGame()
+  //starts 60-sec countdown when the word is selected
+  startTime = millis()
 }
 
 function draw() {
@@ -52,6 +59,9 @@ function draw() {
   background ("lightblue")
   //draw animated bubbles
   drawBubbles()
+
+  //draw countdown timer
+  drawTimer()
   
   if (!isGameOver()) {
     //hangman code
@@ -135,7 +145,6 @@ function keyPressed() {
       // console.log(limbCount + " limbs are drawn")
     }
   }
-  drawGameOver() // ask user if they want to play again
 }
 
 function chooseWord() {
@@ -144,7 +153,7 @@ function chooseWord() {
 }
 
 function isGameOver() {
-  if (limbCount === 9) {
+  if (limbCount === 9 || timeLeft === 0) {
     return true
   } else if (areAllLettersRevealed()) {
     return true
@@ -177,7 +186,7 @@ function drawGameOver() {
   textAlign(CENTER, CENTER);
   textWeight(900)
   noStroke()
-  if (limbCount === 9) {
+  if (limbCount === 9 || timeLeft === 0) {
     textSize(30)
     text("The word was " + gameWord, 200, 275)
     textSize(60)
@@ -227,5 +236,20 @@ function drawBubbles() {
       bubble.y = height + random(10, 100)
       bubble.x = random(width)
     }
+  }
+}
+
+function drawTimer() {
+  timeLeft = max(0, gameTime - floor((millis() - startTime) / 1000))
+
+  fill("black")
+  noStroke()
+  textSize(22)
+  textAlign(LEFT)
+  text("Time: " + timeLeft, 15, 30)
+
+  if (timeLeft <= 10) {
+    fill("red")
+    text("Time: " + timeLeft, 15, 30)
   }
 }
