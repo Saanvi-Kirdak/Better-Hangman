@@ -199,6 +199,10 @@ function drawGameOver() {
   } else if (areAllLettersRevealed()) {
     textSize(60)
     text("You Won!", 200, 200);
+
+    textSize(30)
+    text("The word was " + gameWord, 200, 275)
+
     if(!musicHasBeenPlayed) {
       wonSound.play()
       musicHasBeenPlayed = true
